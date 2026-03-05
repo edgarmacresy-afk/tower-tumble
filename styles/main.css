@@ -764,8 +764,8 @@ canvas {
 
 #touch-jump-btn {
   position: absolute;
-  right: 15px;
-  bottom: 20px;
+  right: 60px;
+  bottom: 80px;
   width: 140px;
   height: 140px;
   border-radius: 50%;

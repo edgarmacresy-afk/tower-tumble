@@ -18,14 +18,19 @@ export class AutoFollowCamera {
     this.currentPosition = new THREE.Vector3();
     this.currentLookAt = new THREE.Vector3();
     this._lastPos = null;
+    this._isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    this._manualDragTimer = 0; // suppress auto-follow briefly after touch drag
 
     this._initMouseControls();
   }
 
+  notifyManualDrag() {
+    this._manualDragTimer = 1.0; // suppress auto-follow for 1 second after last drag
+  }
+
   _initMouseControls() {
-    const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
     document.addEventListener('click', () => {
-      if (!isTouch && !document.pointerLockElement) {
+      if (!this._isTouch && !document.pointerLockElement) {
         document.body.requestPointerLock();
       }
     });
@@ -43,8 +48,11 @@ export class AutoFollowCamera {
   update(dt) {
     const playerPos = this.target.position.clone();
 
+    if (this._manualDragTimer > 0) this._manualDragTimer -= dt;
+
     // Auto-follow: smoothly rotate yaw to sit behind the player's movement direction
-    if (this._lastPos) {
+    // Suppressed briefly after manual camera drag, and gentler on touch devices
+    if (this._lastPos && this._manualDragTimer <= 0) {
       const dx = playerPos.x - this._lastPos.x;
       const dz = playerPos.z - this._lastPos.z;
       const hSpeed = Math.sqrt(dx * dx + dz * dz);
@@ -59,10 +67,9 @@ export class AutoFollowCamera {
         while (diff < -Math.PI) diff += Math.PI * 2;
 
         // Only follow if player is moving forward/sideways relative to camera.
-        // If |diff| > 90° the player is moving toward the camera (backward key),
-        // so skip — otherwise it creates a 180° spin feedback loop.
         if (Math.abs(diff) < Math.PI * 0.6) {
-          this.yaw += diff * Math.min(2.5 * dt, 1);
+          const followSpeed = this._isTouch ? 0.8 : 2.5;
+          this.yaw += diff * Math.min(followSpeed * dt, 1);
         }
       }
     }

@@ -200,6 +200,7 @@ export class TouchControls {
         this.cam.yaw -= dx * sensitivity;
         this.cam.pitch -= dy * sensitivity;
         this.cam.pitch = clamp(this.cam.pitch, CAMERA.MIN_PITCH, CAMERA.MAX_PITCH);
+        this.cam.notifyManualDrag();
         e.preventDefault();
         break;
       }
