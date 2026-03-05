@@ -28,6 +28,9 @@ export class StumbleGame {
     this.lobbyPlayers = lobbyPlayers;
     this.remotePlayerManager = null;
     this.localFinished = false;
+    this.spectating = false;
+    this.spectateIndex = 0;
+    this._onSpectateClick = null;
   }
 
   async init() {
@@ -190,6 +193,7 @@ export class StumbleGame {
       };
 
       this.network.onGameOver = (data) => {
+        this._stopSpectating();
         this.state = GameState.VICTORY;
         this.hudEl.style.display = 'none';
         if (document.pointerLockElement) document.exitPointerLock();
@@ -280,6 +284,66 @@ export class StumbleGame {
     await this.physics.init();
   }
 
+  _startSpectating() {
+    if (!this.remotePlayerManager) return;
+    const unfinished = this._getUnfinishedPlayers();
+    if (unfinished.length === 0) return;
+
+    this.spectating = true;
+    this.spectateIndex = 0;
+    this._setSpectateTarget(unfinished[0]);
+
+    // Show spectate banner
+    if (!document.getElementById('spectate-banner')) {
+      const banner = document.createElement('div');
+      banner.id = 'spectate-banner';
+      banner.innerHTML = '<span id="spectate-name"></span><br><small>Tap / Click to switch player</small>';
+      banner.style.cssText = 'position:fixed;top:60px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.7);color:#fff;padding:10px 24px;border-radius:12px;font-family:sans-serif;font-size:16px;text-align:center;z-index:60;pointer-events:none;';
+      document.body.appendChild(banner);
+    }
+    this._updateSpectateBanner(unfinished[0]);
+
+    // Click/tap to cycle
+    this._onSpectateClick = () => {
+      const players = this._getUnfinishedPlayers();
+      if (players.length === 0) return;
+      this.spectateIndex = (this.spectateIndex + 1) % players.length;
+      this._setSpectateTarget(players[this.spectateIndex]);
+      this._updateSpectateBanner(players[this.spectateIndex]);
+    };
+    document.addEventListener('click', this._onSpectateClick);
+    document.addEventListener('touchstart', this._onSpectateClick);
+  }
+
+  _stopSpectating() {
+    this.spectating = false;
+    if (this._onSpectateClick) {
+      document.removeEventListener('click', this._onSpectateClick);
+      document.removeEventListener('touchstart', this._onSpectateClick);
+      this._onSpectateClick = null;
+    }
+    const banner = document.getElementById('spectate-banner');
+    if (banner) banner.remove();
+  }
+
+  _getUnfinishedPlayers() {
+    if (!this.remotePlayerManager) return [];
+    return Array.from(this.remotePlayerManager.players.values()).filter(rp => !rp.finished);
+  }
+
+  _setSpectateTarget(remotePlayer) {
+    if (remotePlayer && remotePlayer.character) {
+      this.cameraController.target = remotePlayer.character.group;
+    }
+  }
+
+  _updateSpectateBanner(remotePlayer) {
+    const nameEl = document.getElementById('spectate-name');
+    if (nameEl && remotePlayer) {
+      nameEl.textContent = `Spectating: ${remotePlayer.name}`;
+    }
+  }
+
   _loop() {
     requestAnimationFrame(() => this._loop());
 
@@ -317,6 +381,21 @@ export class StumbleGame {
     // Remote players (multiplayer)
     if (this.remotePlayerManager) {
       this.remotePlayerManager.update(dt);
+    }
+
+    // Spectate: auto-switch if current target finished
+    if (this.spectating) {
+      const unfinished = this._getUnfinishedPlayers();
+      if (unfinished.length === 0) {
+        this._stopSpectating();
+      } else {
+        const current = unfinished[this.spectateIndex % unfinished.length];
+        if (this.cameraController.target !== current.character.group) {
+          this.spectateIndex = this.spectateIndex % unfinished.length;
+          this._setSpectateTarget(current);
+          this._updateSpectateBanner(current);
+        }
+      }
     }
 
     // --- Game state ---
@@ -359,9 +438,10 @@ export class StumbleGame {
           const elapsed = this._getElapsed();
 
           if (this.isMultiplayer) {
-            // Multiplayer: tell server, keep rendering for others
+            // Multiplayer: tell server, switch to spectate
             this.localFinished = true;
             this.network.sendFinished(elapsed);
+            this._startSpectating();
           } else {
             // Solo: show victory
             this.state = GameState.VICTORY;
