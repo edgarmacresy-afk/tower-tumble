@@ -15,6 +15,9 @@ services:
     buildCommand: npm install && npm run build
     staticPublishPath: dist
     plan: free
+    envVars:
+      - key: VITE_SERVER_URL
+        sync: false
     headers:
       - path: /*
         name: Cache-Control
