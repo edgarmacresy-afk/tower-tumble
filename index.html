@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tower Tumble</title>
+  <link rel="stylesheet" href="/styles/main.css" />
+</head>
+<body>
+  <!-- MODE SELECT -->
+  <div id="mode-select" class="screen-overlay" style="display:flex">
+    <div class="screen-title">TOWER TUMBLE</div>
+    <div class="screen-subtitle">Choose your game mode</div>
+    <div class="mode-buttons">
+      <button id="tower-mode-btn" class="screen-btn mode-btn">TOWER RACE</button>
+      <button id="stumble-mode-btn" class="screen-btn mode-btn stumble-btn">STUMBLE RUN</button>
+      <button id="survival-mode-btn" class="screen-btn mode-btn survival-btn">SURVIVAL ARENA</button>
+      <button id="multiplayer-mode-btn" class="screen-btn mode-btn mp-btn">MULTIPLAYER</button>
+    </div>
+  </div>
+
+  <!-- TOWER HUD -->
+  <div id="hud">
+    <div id="timer"><span id="timer-value">0:00</span></div>
+    <div id="race-position-container"><span id="race-position">1st / 5</span></div>
+    <div id="height-meter">
+      <div id="height-bar-fill"></div>
+    </div>
+    <div id="height-label"><span id="height-value">0m</span></div>
+  </div>
+
+  <!-- TOWER: Start screen -->
+  <div id="start-screen" class="screen-overlay">
+    <div class="screen-title">TOWER TUMBLE</div>
+    <div class="screen-subtitle">Race to the top! Beat the bots!</div>
+    <button id="start-btn" class="screen-btn">RACE</button>
+    <div class="controls-hint">
+      <kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> to move &nbsp;&bull;&nbsp;
+      <kbd>Space</kbd> to jump &nbsp;&bull;&nbsp;
+      Mouse to look around
+    </div>
+  </div>
+
+  <!-- TOWER: Game over screen -->
+  <div id="gameover-screen" class="screen-overlay">
+    <div class="screen-title">RACE OVER</div>
+    <div class="screen-subtitle">A bot beat you to the top!</div>
+    <div class="screen-stat">You finished: <span id="final-position">2nd</span></div>
+    <button id="retry-btn" class="screen-btn">RACE AGAIN</button>
+  </div>
+
+  <!-- TOWER: Victory screen -->
+  <div id="victory-screen" class="screen-overlay">
+    <div class="screen-title">1ST PLACE!</div>
+    <div class="screen-subtitle">You beat everyone to the top!</div>
+    <div class="screen-stat">Time: <span id="final-time">0:00</span></div>
+    <button id="play-again-btn" class="screen-btn">RACE AGAIN</button>
+  </div>
+
+  <!-- STUMBLE: Map selection -->
+  <div id="stumble-map-select" class="screen-overlay">
+    <div class="screen-title stumble-title">CHOOSE YOUR MAP</div>
+    <div class="screen-subtitle">Pick an obstacle course!</div>
+    <div class="map-cards">
+      <div class="map-card" id="map-original-btn">
+        <div class="map-card-icon">🏰</div>
+        <div class="map-card-title">Obstacle Course</div>
+        <div class="map-card-desc">Winding path with spinners, boxing gloves, trampolines and a spiral tower!</div>
+        <div class="map-card-info">~3-5 min</div>
+      </div>
+      <div class="map-card" id="map-cloud-btn">
+        <div class="map-card-icon">☁️</div>
+        <div class="map-card-title">Cloud Kingdom</div>
+        <div class="map-card-desc">Rainbow bridges, cloud bouncing, wind gusts and a thrilling sky slide!</div>
+        <div class="map-card-info">~1-2 min</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STUMBLE HUD -->
+  <div id="stumble-hud">
+    <div id="stumble-timer-container"><span id="stumble-timer">0:00</span></div>
+    <div id="stumble-progress-container">
+      <div id="stumble-progress-bar">
+        <div id="stumble-progress-fill"></div>
+      </div>
+      <span id="stumble-progress">0%</span>
+    </div>
+  </div>
+
+  <!-- STUMBLE: Start screen -->
+  <div id="stumble-start" class="screen-overlay">
+    <div class="screen-title stumble-title">STUMBLE RUN</div>
+    <div class="screen-subtitle">Race through the obstacle course!</div>
+    <button id="stumble-start-btn" class="screen-btn stumble-btn">GO!</button>
+    <div class="controls-hint">
+      <kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> to move &nbsp;&bull;&nbsp;
+      <kbd>Space</kbd> to jump &nbsp;&bull;&nbsp;
+      Double-tap <kbd>Space</kbd> to dive &nbsp;&bull;&nbsp;
+      Mouse to look around
+    </div>
+  </div>
+
+  <!-- STUMBLE: Victory screen -->
+  <div id="stumble-victory" class="screen-overlay">
+    <div class="screen-title stumble-title">FINISH!</div>
+    <div class="screen-subtitle">You completed the course!</div>
+    <div class="screen-stat">Time: <span id="stumble-final-time">0:00</span></div>
+    <button id="stumble-again-btn" class="screen-btn stumble-btn">RUN AGAIN</button>
+  </div>
+
+  <!-- SURVIVAL HUD -->
+  <div id="survival-hud">
+    <div id="survival-timer-container"><span id="survival-timer">0:00</span></div>
+    <div id="survival-phase-container"><span id="survival-phase">Phase 1</span></div>
+    <div id="survival-lava-container">
+      <div id="survival-lava-bar">
+        <div id="survival-lava-bar-fill"></div>
+      </div>
+      <span id="survival-lava-height">8.0m</span>
+    </div>
+  </div>
+
+  <!-- SURVIVAL: Start screen -->
+  <div id="survival-start" class="screen-overlay">
+    <div class="screen-title survival-title">SURVIVAL ARENA</div>
+    <div class="screen-subtitle">Escape the rising lava! How long can you survive?</div>
+    <button id="survival-start-btn" class="screen-btn survival-btn">SURVIVE!</button>
+    <div class="controls-hint">
+      <kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> to move &nbsp;&bull;&nbsp;
+      <kbd>Space</kbd> to jump &nbsp;&bull;&nbsp;
+      Double-tap <kbd>Space</kbd> to dive &nbsp;&bull;&nbsp;
+      Mouse to look around
+    </div>
+  </div>
+
+  <!-- SURVIVAL: Game Over screen -->
+  <div id="survival-gameover" class="screen-overlay">
+    <div class="screen-title survival-gameover-title">CONSUMED!</div>
+    <div class="screen-subtitle">The lava got you!</div>
+    <div class="screen-stat">Survived: <span id="survival-final-time">0:00</span></div>
+    <div class="screen-stat">Best: <span id="survival-best-time">0:00</span></div>
+    <button id="survival-retry-btn" class="screen-btn survival-btn">TRY AGAIN</button>
+  </div>
+
+  <!-- MULTIPLAYER: Lobby -->
+  <div id="mp-lobby" class="screen-overlay">
+    <div class="screen-title mp-title">MULTIPLAYER</div>
+    <div class="screen-subtitle">Race your friends online!</div>
+    <div class="mp-lobby-form">
+      <input id="mp-name-input" class="mp-input" type="text" placeholder="Your name" maxlength="12" />
+      <div class="mp-map-select">
+        <div class="mp-map-option mp-map-selected" id="mp-map-original">Obstacle Course</div>
+        <div class="mp-map-option" id="mp-map-cloud">Cloud Kingdom</div>
+      </div>
+      <button id="mp-create-btn" class="screen-btn mp-btn">CREATE ROOM</button>
+      <div class="mp-divider">-- or join a room --</div>
+      <div class="mp-join-row">
+        <input id="mp-code-input" class="mp-input mp-code" type="text" placeholder="CODE" maxlength="4" />
+        <button id="mp-join-btn" class="screen-btn mp-btn mp-join-btn">JOIN</button>
+      </div>
+      <button id="mp-automatch-btn" class="screen-btn mp-btn mp-auto-btn">AUTO-MATCH</button>
+      <div id="mp-lobby-error" class="mp-error"></div>
+    </div>
+    <button id="mp-lobby-back" class="mp-back-btn">BACK</button>
+  </div>
+
+  <!-- MULTIPLAYER: Waiting Room -->
+  <div id="mp-waiting" class="screen-overlay">
+    <div class="screen-title mp-title">WAITING ROOM</div>
+    <div class="mp-room-code-label">Room Code:</div>
+    <div id="mp-room-code" class="mp-room-code">ABCD</div>
+    <div id="mp-waiting-map" class="mp-waiting-map">Map: Obstacle Course</div>
+    <div id="mp-player-list" class="mp-player-list"></div>
+    <div id="mp-waiting-status" class="mp-waiting-status">Waiting for players...</div>
+    <div class="mp-waiting-buttons">
+      <button id="mp-ready-btn" class="screen-btn mp-btn">READY</button>
+      <button id="mp-start-btn" class="screen-btn mp-btn" style="display:none">START GAME</button>
+    </div>
+    <button id="mp-waiting-back" class="mp-back-btn">LEAVE</button>
+  </div>
+
+  <!-- MULTIPLAYER: Countdown -->
+  <div id="mp-countdown" class="screen-overlay mp-countdown-overlay">
+    <div id="mp-countdown-text" class="countdown-number">3</div>
+  </div>
+
+  <!-- MULTIPLAYER: Results -->
+  <div id="mp-results" class="screen-overlay">
+    <div class="screen-title mp-title">RESULTS</div>
+    <div id="mp-results-list" class="mp-results-list"></div>
+    <div class="mp-results-buttons">
+      <button id="mp-play-again-btn" class="screen-btn mp-btn">PLAY AGAIN</button>
+      <button id="mp-leave-btn" class="screen-btn mp-btn mp-leave-btn">LEAVE</button>
+    </div>
+  </div>
+
+  <!-- MULTIPLAYER: Toast notifications -->
+  <div id="mp-toasts" class="mp-toasts"></div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
