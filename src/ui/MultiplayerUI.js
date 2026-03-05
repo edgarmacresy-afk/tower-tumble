@@ -330,9 +330,14 @@ export class MultiplayerUI {
 
       const time = document.createElement('span');
       time.className = 'mp-result-time';
-      const mins = Math.floor(entry.time / 60);
-      const secs = Math.floor(entry.time % 60);
-      time.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+      if (entry.dnf) {
+        time.textContent = 'DNF';
+        time.style.color = '#FF6B6B';
+      } else {
+        const mins = Math.floor(entry.time / 60);
+        const secs = Math.floor(entry.time % 60);
+        time.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+      }
 
       row.appendChild(place);
       row.appendChild(name);

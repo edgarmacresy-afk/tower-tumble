@@ -28,6 +28,8 @@ const PLAYER_COLORS = [
   0x45B7D1, 0x96CEB4, 0xFECAD4, 0xF38181, 0x00B894,
 ];
 
+const TIME_LIMIT_MS = 5 * 60 * 1000; // 5 minutes
+
 function generateCode() {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
   let code;
@@ -61,6 +63,7 @@ function createRoom(hostId, name, mapId) {
     countdownTimer: null,
     broadcastInterval: null,
     inactivityTimeout: null,
+    timeLimitTimeout: null,
   };
   room.players.set(hostId, {
     id: hostId,
@@ -82,6 +85,7 @@ function createRoom(hostId, name, mapId) {
 
 function resetInactivity(room) {
   if (room.inactivityTimeout) clearTimeout(room.inactivityTimeout);
+  if (room.timeLimitTimeout) clearTimeout(room.timeLimitTimeout);
   room.inactivityTimeout = setTimeout(() => destroyRoom(room.code), 30 * 60 * 1000);
 }
 
@@ -106,6 +110,29 @@ function getPlayersArray(room) {
     id: p.id, name: p.name, color: p.color, ready: p.ready,
     finished: p.finished, finishTime: p.finishTime,
   }));
+}
+
+function endGameByTimeLimit(room) {
+  if (room.state \!== 'playing') return;
+  room.state = 'finished';
+  stopBroadcast(room);
+  if (room.timeLimitTimeout) { clearTimeout(room.timeLimitTimeout); room.timeLimitTimeout = null; }
+
+  const unfinished = [];
+  for (const p of room.players.values()) {
+    if (\!p.finished) unfinished.push(p);
+  }
+  unfinished.sort((a, b) => (b.position.z || 0) - (a.position.z || 0));
+
+  const elapsed = (Date.now() - room.startTime) / 1000;
+  for (const p of unfinished) {
+    p.finished = true;
+    p.finishTime = elapsed;
+    const place = room.finishOrder.length + 1;
+    room.finishOrder.push({ id: p.id, name: p.name, time: elapsed, place, dnf: true });
+  }
+
+  io.to(room.code).emit('game-over', { finishOrder: room.finishOrder, timeLimit: true });
 }
 
 function startBroadcast(room) {
@@ -341,6 +368,7 @@ io.on('connection', (socket) => {
 
         io.to(room.code).emit('game-start', { startTime: room.startTime });
         startBroadcast(room);
+        room.timeLimitTimeout = setTimeout(() => endGameByTimeLimit(room), TIME_LIMIT_MS);
       }
     }, 1000);
   });
@@ -377,6 +405,7 @@ io.on('connection', (socket) => {
     if (allFinished) {
       room.state = 'finished';
       stopBroadcast(room);
+      if (room.timeLimitTimeout) { clearTimeout(room.timeLimitTimeout); room.timeLimitTimeout = null; }
       io.to(room.code).emit('game-over', { finishOrder: room.finishOrder });
     }
   });
@@ -387,6 +416,7 @@ io.on('connection', (socket) => {
     if (socket.id !== room.hostId) return;
 
     stopBroadcast(room);
+    if (room.timeLimitTimeout) { clearTimeout(room.timeLimitTimeout); room.timeLimitTimeout = null; }
     room.state = 'waiting';
     room.finishOrder = [];
     for (const p of room.players.values()) {
