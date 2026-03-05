@@ -52,8 +52,8 @@ mpUI.onLeave = () => {
   modeSelect.style.display = 'flex';
 };
 
-mpUI.onGameStart = () => {
+mpUI.onGameStart = (data) => {
   const mapId = network.mapId || 'original';
-  const game = new StumbleGame(mapId, network);
+  const game = new StumbleGame(mapId, network, data.lobbyPlayers);
   game.init().catch((err) => console.error('Multiplayer init failed:', err));
 };

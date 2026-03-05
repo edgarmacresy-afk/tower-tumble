@@ -160,6 +160,10 @@ export class MultiplayerUI {
       setTimeout(() => {
         this.countdownScreen.style.display = 'none';
       }, 800);
+      // Pass lobby players so the game can seed remote player manager
+      data.lobbyPlayers = Array.from(this.players.entries()).map(([id, p]) => ({
+        id, name: p.name, color: p.color,
+      }));
       if (this.onGameStart) this.onGameStart(data);
     };
 

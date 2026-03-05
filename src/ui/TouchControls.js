@@ -11,7 +11,10 @@ export class TouchControls {
     this.stickTouchId = null;
     this.stickOrigin = { x: 0, y: 0 };
     this.stickPos = { x: 0, y: 0 };
-    this.stickRadius = 50;
+    this.stickRadius = 55;
+
+    // Jump state
+    this.jumpTouchId = null;
 
     // Camera drag state
     this.camTouchId = null;
@@ -66,16 +69,27 @@ export class TouchControls {
     this.joystickArea.addEventListener('touchend', (e) => this._joystickEnd(e));
     this.joystickArea.addEventListener('touchcancel', (e) => this._joystickEnd(e));
 
-    // Jump button
+    // Jump button — track touch ID to prevent losing the press
     this.jumpBtn.addEventListener('touchstart', (e) => {
       e.preventDefault();
+      e.stopPropagation();
+      this.jumpTouchId = e.changedTouches[0].identifier;
       this.controller.keys['Space'] = true;
     });
     this.jumpBtn.addEventListener('touchend', (e) => {
       e.preventDefault();
-      this.controller.keys['Space'] = false;
+      e.stopPropagation();
+      for (const t of e.changedTouches) {
+        if (t.identifier === this.jumpTouchId) {
+          this.jumpTouchId = null;
+          this.controller.keys['Space'] = false;
+          break;
+        }
+      }
     });
-    this.jumpBtn.addEventListener('touchcancel', () => {
+    this.jumpBtn.addEventListener('touchcancel', (e) => {
+      e.stopPropagation();
+      this.jumpTouchId = null;
       this.controller.keys['Space'] = false;
     });
 

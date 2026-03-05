@@ -16,7 +16,7 @@ const GameState = {
 };
 
 export class StumbleGame {
-  constructor(mapId = 'original', networkManager = null) {
+  constructor(mapId = 'original', networkManager = null, lobbyPlayers = null) {
     this.state = GameState.MENU;
     this.clock = new THREE.Clock();
     this.physics = new PhysicsWorld();
@@ -25,6 +25,7 @@ export class StumbleGame {
     this.mapId = mapId;
     this.network = networkManager;
     this.isMultiplayer = !!networkManager;
+    this.lobbyPlayers = lobbyPlayers;
     this.remotePlayerManager = null;
     this.localFinished = false;
   }
@@ -162,6 +163,13 @@ export class StumbleGame {
       this.remotePlayerManager = new RemotePlayerManager(
         this.scene, this.network.playerId
       );
+
+      // Seed existing lobby players
+      if (this.lobbyPlayers) {
+        for (const p of this.lobbyPlayers) {
+          this.remotePlayerManager.addPlayer(p.id, p.name, p.color);
+        }
+      }
 
       this.network.onStateUpdate = (data) => {
         if (this.remotePlayerManager) {
