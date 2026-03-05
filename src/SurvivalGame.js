@@ -221,9 +221,9 @@ export class SurvivalGame {
     const safeDistance = Math.max(0, playerH - lavaH);
     this.lavaHeightEl.textContent = `${safeDistance.toFixed(1)}m`;
 
-    // Lava bar fill (how far lava has risen toward peak y=24)
+    // Lava bar fill (how far lava has risen toward peak y=18)
     const lavaProgress = Math.min(100, Math.max(0,
-      ((lavaH - LAVA_CONST.START_HEIGHT) / (24 - LAVA_CONST.START_HEIGHT)) * 100
+      ((lavaH - LAVA_CONST.START_HEIGHT) / (18 - LAVA_CONST.START_HEIGHT)) * 100
     ));
     this.lavaBarFill.style.height = `${lavaProgress}%`;
 
