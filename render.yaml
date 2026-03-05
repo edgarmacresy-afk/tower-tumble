@@ -3,7 +3,6 @@ services:
     name: tower-tumble-server
     runtime: node
     rootDir: server
-    plan: free
     buildCommand: npm install
     startCommand: npm start
     envVars:
@@ -14,7 +13,6 @@ services:
     runtime: static
     buildCommand: npm install && npm run build
     staticPublishPath: dist
-    plan: free
     envVars:
       - key: VITE_SERVER_URL
         sync: false
