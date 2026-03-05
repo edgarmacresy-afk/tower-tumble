@@ -714,3 +714,79 @@ canvas {
   0% { transform: translateX(50px); opacity: 0; }
   100% { transform: translateX(0); opacity: 1; }
 }
+
+/* ── Touch Controls ── */
+#touch-controls {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  z-index: 50;
+  display: none;
+}
+
+@media (pointer: coarse) {
+  #touch-controls { display: block; }
+}
+
+#touch-joystick-area {
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+  width: 150px;
+  height: 150px;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+#touch-joystick-base {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.35);
+}
+
+#touch-joystick-knob {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  border: 2px solid rgba(255, 255, 255, 0.7);
+}
+
+#touch-jump-btn {
+  position: absolute;
+  right: 25px;
+  bottom: 35px;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(255, 100, 50, 0.4);
+  border: 3px solid rgba(255, 150, 80, 0.7);
+  color: #fff;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  pointer-events: auto;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+#touch-jump-btn:active {
+  background: rgba(255, 130, 70, 0.6);
+  transform: scale(0.92);
+}
+
+@media (pointer: coarse) {
+  .controls-hint { display: none; }
+}

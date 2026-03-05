@@ -7,6 +7,7 @@ import { AutoFollowCamera } from './camera/AutoFollowCamera.js';
 import { ObstacleCourse } from './stumble/ObstacleCourse.js';
 import { CloudKingdomCourse } from './stumble/CloudKingdomCourse.js';
 import { RemotePlayerManager } from './network/RemotePlayerManager.js';
+import { TouchControls } from './ui/TouchControls.js';
 
 const GameState = {
   MENU: 'menu',
@@ -150,6 +151,11 @@ export class StumbleGame {
       this.physics, this.playerBody, this.playerCollider,
       this.character, this.cameraController
     );
+
+    // Touch controls
+    if (this.touchControls) this.touchControls.destroy();
+    this.touchControls = new TouchControls(this.playerController, this.cameraController);
+    this.touchControls.init();
 
     // Multiplayer: set up remote players and network callbacks
     if (this.isMultiplayer) {

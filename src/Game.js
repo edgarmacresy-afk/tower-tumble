@@ -8,6 +8,7 @@ import { TowerGenerator } from './tower/TowerGenerator.js';
 import { Bot } from './player/Bot.js';
 import { HUD } from './ui/HUD.js';
 import { MenuScreen } from './ui/MenuScreen.js';
+import { TouchControls } from './ui/TouchControls.js';
 
 const GameState = {
   MENU: 'menu',
@@ -115,6 +116,11 @@ export class Game {
     this.playerController = new PlayerController(
       this.physics, this.playerBody, this.playerCollider, this.character, this.cameraController
     );
+
+    // Touch controls
+    if (this.touchControls) this.touchControls.destroy();
+    this.touchControls = new TouchControls(this.playerController, this.cameraController);
+    this.touchControls.init();
 
     // Start
     this.hud.start();

@@ -6,6 +6,7 @@ import { StumbleController } from './stumble/StumbleController.js';
 import { AutoFollowCamera } from './camera/AutoFollowCamera.js';
 import { SurvivalArenaCourse } from './survival/SurvivalArenaCourse.js';
 import { RisingLava } from './hazards/RisingLava.js';
+import { TouchControls } from './ui/TouchControls.js';
 
 const GameState = {
   MENU: 'menu',
@@ -137,6 +138,11 @@ export class SurvivalGame {
       this.physics, this.playerBody, this.playerCollider,
       this.character, this.cameraController
     );
+
+    // Touch controls
+    if (this.touchControls) this.touchControls.destroy();
+    this.touchControls = new TouchControls(this.playerController, this.cameraController);
+    this.touchControls.init();
 
     // HUD
     this.hudEl.style.display = 'block';

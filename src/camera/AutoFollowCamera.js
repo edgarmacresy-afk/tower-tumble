@@ -23,8 +23,9 @@ export class AutoFollowCamera {
   }
 
   _initMouseControls() {
+    const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
     document.addEventListener('click', () => {
-      if (!document.pointerLockElement) {
+      if (!isTouch && !document.pointerLockElement) {
         document.body.requestPointerLock();
       }
     });
