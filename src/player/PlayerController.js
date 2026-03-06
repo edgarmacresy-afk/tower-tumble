@@ -11,6 +11,7 @@ export class PlayerController {
 
     this.keys = {};
     this.grounded = false;
+    this.useCharacterYaw = false;
 
     // Jump state machine: 'ready' -> 'rising' -> 'falling' -> 'landed' -> 'ready'
     this.jumpState = 'ready';
@@ -72,7 +73,7 @@ export class PlayerController {
     }
 
     // Camera-relative movement
-    const yaw = this.cameraController.yaw;
+    const yaw = this.useCharacterYaw ? this.character.group.rotation.y : this.cameraController.yaw;
     const moveX = inputX * Math.cos(yaw) + inputZ * Math.sin(yaw);
     const moveZ = -inputX * Math.sin(yaw) + inputZ * Math.cos(yaw);
 

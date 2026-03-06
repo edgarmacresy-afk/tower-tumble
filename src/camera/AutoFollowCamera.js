@@ -18,7 +18,7 @@ export class AutoFollowCamera {
     this.currentPosition = new THREE.Vector3();
     this.currentLookAt = new THREE.Vector3();
     this._lastPos = null;
-    this._isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    this._disableAutoFollow = false; // set true by TouchControls when active
     this._manualDragTimer = 0; // suppress auto-follow briefly after touch drag
 
     this._initMouseControls();
@@ -30,7 +30,7 @@ export class AutoFollowCamera {
 
   _initMouseControls() {
     document.addEventListener('click', () => {
-      if (!this._isTouch && !document.pointerLockElement) {
+      if (!this._disableAutoFollow && !document.pointerLockElement) {
         document.body.requestPointerLock();
       }
     });
@@ -52,7 +52,7 @@ export class AutoFollowCamera {
 
     // Auto-follow: smoothly rotate yaw to sit behind the player's movement direction
     // Suppressed briefly after manual camera drag, and gentler on touch devices
-    if (this._lastPos && this._manualDragTimer <= 0) {
+    if (this._lastPos && this._manualDragTimer <= 0 && !this._disableAutoFollow) {
       const dx = playerPos.x - this._lastPos.x;
       const dz = playerPos.z - this._lastPos.z;
       const hSpeed = Math.sqrt(dx * dx + dz * dz);

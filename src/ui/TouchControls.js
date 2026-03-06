@@ -35,6 +35,19 @@ export class TouchControls {
     this.active = true;
     this._createUI();
     this._bindEvents();
+
+    // Don't enable touch mode immediately — wait for first actual touch.
+    // This avoids breaking keyboard/mouse on touchscreen laptops.
+    this._touchModeEnabled = false;
+    const enableTouchMode = () => {
+      if (this._touchModeEnabled) return;
+      this._touchModeEnabled = true;
+      this.cam._disableAutoFollow = true;
+      this.container.style.display = '';
+    };
+    // Hide touch UI until first touch
+    this.container.style.display = 'none';
+    document.addEventListener('touchstart', enableTouchMode, { once: true });
   }
 
   _createUI() {

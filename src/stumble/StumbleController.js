@@ -11,6 +11,7 @@ export class StumbleController {
 
     this.keys = {};
     this.grounded = false;
+    this.useCharacterYaw = false;
 
     // Jump state machine
     this.jumpState = 'ready';
@@ -82,8 +83,8 @@ export class StumbleController {
       inputZ *= inv;
     }
 
-    // Camera-relative movement
-    const yaw = this.cameraController.yaw;
+    // Movement direction: character-relative on touch, camera-relative on desktop
+    const yaw = this.useCharacterYaw ? this.character.group.rotation.y : this.cameraController.yaw;
     const moveX = inputX * Math.cos(yaw) + inputZ * Math.sin(yaw);
     const moveZ = -inputX * Math.sin(yaw) + inputZ * Math.cos(yaw);
 
