@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { COLORS, PHYSICS, STUMBLE } from './utils/constants.js';
 import { PhysicsWorld } from './physics/PhysicsWorld.js';
-import { BeanCharacter } from './player/BeanCharacter.js';
+import { createPlayerCharacter } from './player/skinPicker.js';
 import { StumbleController } from './stumble/StumbleController.js';
 import { AutoFollowCamera } from './camera/AutoFollowCamera.js';
 import { ObstacleCourse } from './stumble/ObstacleCourse.js';
@@ -134,7 +134,7 @@ export class StumbleGame {
     this.course.generate();
 
     // Player
-    this.character = new BeanCharacter();
+    this.character = createPlayerCharacter();
     this.scene.add(this.character.group);
 
     const spawnPos = new THREE.Vector3(0, 2, 5);

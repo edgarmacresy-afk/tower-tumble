@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { COLORS, PHYSICS, STUMBLE, LAVA as LAVA_CONST, SURVIVAL } from './utils/constants.js';
 import { PhysicsWorld } from './physics/PhysicsWorld.js';
-import { BeanCharacter } from './player/BeanCharacter.js';
+import { createPlayerCharacter } from './player/skinPicker.js';
 import { StumbleController } from './stumble/StumbleController.js';
 import { AutoFollowCamera } from './camera/AutoFollowCamera.js';
 import { SurvivalArenaCourse } from './survival/SurvivalArenaCourse.js';
@@ -117,7 +117,7 @@ export class SurvivalGame {
     this.lava.start();
 
     // Player
-    this.character = new BeanCharacter();
+    this.character = createPlayerCharacter();
     this.scene.add(this.character.group);
 
     const spawnPos = new THREE.Vector3(0, SURVIVAL.SPAWN_Y, 0);

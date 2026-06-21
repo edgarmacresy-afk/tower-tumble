@@ -3,9 +3,25 @@ import { StumbleGame } from './StumbleGame.js';
 import { SurvivalGame } from './SurvivalGame.js';
 import { NetworkManager } from './network/NetworkManager.js';
 import { MultiplayerUI } from './ui/MultiplayerUI.js';
+import { getSkin, setSkin } from './player/skinPicker.js';
 
 const modeSelect = document.getElementById('mode-select');
 const mapSelect = document.getElementById('stumble-map-select');
+
+// Skin picker
+function refreshSkinUI() {
+  const current = getSkin();
+  document.querySelectorAll('.skin-option').forEach((btn) => {
+    btn.classList.toggle('skin-selected', btn.dataset.skin === current);
+  });
+}
+document.querySelectorAll('.skin-option').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    setSkin(btn.dataset.skin);
+    refreshSkinUI();
+  });
+});
+refreshSkinUI();
 
 // ── Tower Race ──
 document.getElementById('tower-mode-btn').addEventListener('click', () => {

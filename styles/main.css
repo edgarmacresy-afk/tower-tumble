@@ -188,6 +188,53 @@ canvas {
   box-shadow: 0 4px 20px rgba(233, 30, 99, 0.4);
 }
 
+/* ============ SKIN PICKER ============ */
+.skin-picker {
+  margin-top: 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  pointer-events: all;
+}
+
+.skin-picker-label {
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.55);
+  font-weight: 700;
+}
+
+.skin-picker-options {
+  display: flex;
+  gap: 10px;
+}
+
+.skin-option {
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+
+.skin-option:hover {
+  border-color: rgba(255, 255, 255, 0.4);
+  color: #fff;
+}
+
+.skin-option.skin-selected {
+  border-color: #A78BFA;
+  background: rgba(167, 139, 250, 0.2);
+  color: #fff;
+  box-shadow: 0 0 16px rgba(167, 139, 250, 0.4);
+}
+
 .stumble-btn:hover {
   box-shadow: 0 6px 30px rgba(233, 30, 99, 0.6);
 }

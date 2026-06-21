@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { COLORS, TOWER, PHYSICS, BOTS } from './utils/constants.js';
 import { PhysicsWorld } from './physics/PhysicsWorld.js';
-import { BeanCharacter } from './player/BeanCharacter.js';
+import { createPlayerCharacter } from './player/skinPicker.js';
 import { PlayerController } from './player/PlayerController.js';
 import { AutoFollowCamera } from './camera/AutoFollowCamera.js';
 import { TowerGenerator } from './tower/TowerGenerator.js';
@@ -95,7 +95,7 @@ export class Game {
     }
 
     // Player character
-    this.character = new BeanCharacter();
+    this.character = createPlayerCharacter();
     this.scene.add(this.character.group);
 
     // Player physics body
